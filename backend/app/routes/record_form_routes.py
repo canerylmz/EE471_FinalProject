@@ -1,7 +1,6 @@
 """Test record form generation endpoints."""
 
 import re
-from datetime import date
 
 from flask import Blueprint, current_app, send_file
 
