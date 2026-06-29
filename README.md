@@ -208,8 +208,8 @@ permissions → Read and write permissions**).
 
 | Page | Screenshot |
 |------|------------|
-| DUT Registration | _placeholder_ |
-| Test Plan | _placeholder_ |
-| Checklist | _placeholder_ |
-| Result & Report | _placeholder_ |
-| Campaign Dashboard | _placeholder_ |
+| DUT Registration | <img width="1118" height="1078" alt="image" src="https://github.com/user-attachments/assets/c1290d48-e65d-49ee-9373-ec67071f3a5d" /> |
+| Test Plan | <img width="1144" height="1080" alt="image" src="https://github.com/user-attachments/assets/5a745975-2485-45f9-a633-e0b67a43b367" /> |
+| Checklist | <img width="1115" height="1080" alt="image" src="https://github.com/user-attachments/assets/7032ad27-7752-4881-8491-fd177b660095" /> |
+| Result & Report | <img width="1241" height="1013" alt="image" src="https://github.com/user-attachments/assets/0305bd35-61b5-4366-b9ef-1de3e2d23383" /> |
+| Campaign Dashboard | <img width="1279" height="1080" alt="image" src="https://github.com/user-attachments/assets/89dcaedb-e312-4c2b-ba5b-0a5afd5dacda" /> |
