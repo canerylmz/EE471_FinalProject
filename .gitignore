@@ -1,0 +1,52 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+backend/data/*.db
+backend/instance/
+
+# --- Node / React ---
+node_modules/
+frontend/dist/
+frontend/build/
+.vite/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Generated exports ---
+backend/exports/
+backend/uploads/
+backend/test_uploads/
+*.docx
+*.pdf
+
+# --- Local presentation notes ---
+SUNUM_REHBERI.md
+
+# --- Agent/local workspace metadata ---
+.agents/
+.codex/
+.git_repo/
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Env ---
+.env
+.env.local

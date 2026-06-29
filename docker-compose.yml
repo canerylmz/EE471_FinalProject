@@ -1,0 +1,61 @@
+services:
+  ai-backend:
+    build:
+      context: ./ai_backend
+      dockerfile: Dockerfile
+    image: testforge-ai-backend
+    container_name: testforge-ai-backend
+    ports:
+      - "5001:5001"
+    environment:
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=qwen2.5:14b
+      - OLLAMA_TIMEOUT=120
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: testforge-backend
+    container_name: testforge-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - AI_BACKEND_URL=http://ai-backend:5001
+      - AI_BACKEND_TIMEOUT=130
+      - TESTFORGE_DB_PATH=/app/data/testforge.db
+      - TESTFORGE_EXPORT_DIR=/app/exports
+    volumes:
+      - testforge-data:/app/data
+      - testforge-exports:/app/exports
+    depends_on:
+      - ai-backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: testforge-frontend
+    container_name: testforge-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  testforge-data:
+  testforge-exports:

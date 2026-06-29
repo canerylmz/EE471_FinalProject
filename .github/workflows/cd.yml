@@ -1,0 +1,132 @@
+name: Build & Verify Images
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  backend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Build backend Docker image
+        run: docker build -t testforge-backend:${{ steps.version.outputs.version }} ./backend
+
+      - name: Run backend container
+        run: |
+          docker run -d --name testforge-backend -p 5000:5000 \
+            testforge-backend:${{ steps.version.outputs.version }}
+
+      - name: Wait for container to become healthy
+        run: |
+          for i in $(seq 1 30); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' testforge-backend || echo "starting")
+            echo "Health status: $STATUS"
+            if [ "$STATUS" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container did not become healthy in time"
+          docker logs testforge-backend
+          exit 1
+
+      - name: Health check via HTTP
+        run: curl --fail http://localhost:5000/api/health
+
+      - name: Print success message
+        run: echo "testforge-backend:${{ steps.version.outputs.version }} built and healthy."
+
+      - name: Clean up container
+        if: always()
+        run: docker rm -f testforge-backend || true
+
+  ai-backend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Build AI backend Docker image
+        run: docker build -t testforge-ai-backend:${{ steps.version.outputs.version }} ./ai_backend
+
+      - name: Run AI backend container
+        run: |
+          docker run -d --name testforge-ai-backend -p 5001:5001 \
+            testforge-ai-backend:${{ steps.version.outputs.version }}
+
+      - name: Wait for container to become healthy
+        run: |
+          for i in $(seq 1 30); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' testforge-ai-backend || echo "starting")
+            echo "Health status: $STATUS"
+            if [ "$STATUS" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container did not become healthy in time"
+          docker logs testforge-ai-backend
+          exit 1
+
+      - name: Health check via HTTP
+        run: curl --fail http://localhost:5001/api/health
+
+      - name: Print success message
+        run: echo "testforge-ai-backend:${{ steps.version.outputs.version }} built and healthy."
+
+      - name: Clean up container
+        if: always()
+        run: docker rm -f testforge-ai-backend || true
+
+  frontend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Build frontend Docker image
+        run: docker build -t testforge-frontend:${{ steps.version.outputs.version }} ./frontend
+
+      - name: Run frontend container
+        run: |
+          docker run -d --name testforge-frontend -p 8080:80 \
+            testforge-frontend:${{ steps.version.outputs.version }}
+
+      - name: Wait for container to become healthy
+        run: |
+          for i in $(seq 1 30); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' testforge-frontend || echo "starting")
+            echo "Health status: $STATUS"
+            if [ "$STATUS" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container did not become healthy in time"
+          docker logs testforge-frontend
+          exit 1
+
+      - name: Serves the SPA shell via HTTP
+        run: curl --fail http://localhost:8080/
+
+      - name: Print success message
+        run: echo "testforge-frontend:${{ steps.version.outputs.version }} built and healthy."
+
+      - name: Clean up container
+        if: always()
+        run: docker rm -f testforge-frontend || true
