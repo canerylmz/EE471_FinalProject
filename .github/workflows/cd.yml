@@ -1,11 +1,15 @@
-name: Build & Verify Images
+name: CD
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   backend-image:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -48,6 +52,7 @@ jobs:
         run: docker rm -f testforge-backend || true
 
   ai-backend-image:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -90,6 +95,7 @@ jobs:
         run: docker rm -f testforge-ai-backend || true
 
   frontend-image:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
