@@ -203,9 +203,6 @@ permissions → Read and write permissions**).
 
 ## Screenshots
 
-> _Add screenshots of the DUT Registration, Test Plan, Checklist, Result/Report and
-> Dashboard pages here._
-
 | Page | Screenshot |
 |------|------------|
 | DUT Registration | <img width="1118" height="1078" alt="image" src="https://github.com/user-attachments/assets/c1290d48-e65d-49ee-9373-ec67071f3a5d" /> |
