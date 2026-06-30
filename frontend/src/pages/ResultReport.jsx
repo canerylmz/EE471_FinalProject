@@ -43,6 +43,32 @@ const ATTACHMENT_TYPES = [
   { value: 'supporting_document', label: 'Supporting Document' },
 ]
 
+const EVALUATION_LABEL_OVERRIDES = {
+  ac_voltage_upp: 'AC Voltage UPP',
+  functional_observation: 'Functional Observation',
+  functional_status_review: 'Functional Status Review',
+  max: 'Maximum',
+  min: 'Minimum',
+  number_of_sweeps: 'Number of Sweeps',
+  range: 'Range',
+  test_voltage: 'Test Voltage',
+}
+
+const formatEvaluationLabel = (value) => {
+  if (!value) return 'General'
+  if (EVALUATION_LABEL_OVERRIDES[value]) return EVALUATION_LABEL_OVERRIDES[value]
+
+  return String(value)
+    .split('_')
+    .filter(Boolean)
+    .map((word) => {
+      const upperWord = word.toUpperCase()
+      if (['AC', 'DC', 'DUT', 'ISO', 'UPP'].includes(upperWord)) return upperWord
+      return `${word.charAt(0).toUpperCase()}${word.slice(1)}`
+    })
+    .join(' ')
+}
+
 export default function ResultReport() {
   const { dutId, testId } = useParams()
 
@@ -1045,7 +1071,7 @@ function EvaluationPanel({ evaluation, result }) {
                 className="flex flex-col gap-1 rounded-md border border-slate-700 p-2 sm:flex-row sm:items-center sm:justify-between"
               >
                 <span className="text-slate-300">
-                  {detail.field} - {detail.type}
+                  {formatEvaluationLabel(detail.field)} - {formatEvaluationLabel(detail.type)}
                 </span>
                 <span className={detail.passed ? 'text-emerald-300' : 'text-red-300'}>
                   {detail.passed ? 'Passed' : 'Failed'}
